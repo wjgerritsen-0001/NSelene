@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.Time.Testing;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -11,6 +12,7 @@ namespace NSelene.Tests.Integration.SharedDriver.Harness
     public class BaseTest
     {
         IWebDriver _driver; 
+        protected FakeTimeProvider _timeProvider;
 
         [OneTimeSetUp]
         public void initDriver()
@@ -23,6 +25,7 @@ namespace NSelene.Tests.Integration.SharedDriver.Harness
             Configuration.Driver = this._driver;
             Configuration.Timeout = 4.0;
             Configuration.PollDuringWaits = 0.1;
+            Configuration.TimeProvider = _timeProvider = new FakeTimeProvider() { AutoAdvanceAmount = TimeSpan.FromMilliseconds(100) };
             Configuration.SetValueByJs = false;
             Configuration.TypeByJs = false;
             Configuration.ClickByJs = false;

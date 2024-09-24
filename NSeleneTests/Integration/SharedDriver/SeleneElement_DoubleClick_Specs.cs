@@ -1,12 +1,13 @@
 using NUnit.Framework;
 using static NSelene.Selene;
+using System;
+using NSelene.Tests.Integration.SharedDriver.Harness;
+using Microsoft.Extensions.Time.Testing;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
 {
-    using System;
-    using System.Linq;
-    using Harness;
-
     [TestFixture]
     public class SeleneElement_DoubleClick_Specs : BaseTest
     {
@@ -18,20 +19,23 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
             Configuration.Timeout = 1.0;
             Configuration.PollDuringWaits = 0.1;
             Given.OpenedEmptyPage();
-            var beforeCall = DateTime.Now;
+            var beforeCall = _timeProvider.GetTimestamp();
+            int delay = 200;
+
             Given.OpenedPageWithBodyTimedOut(
                 @"
                 <span ondblclick='window.location=this.href + ""#second""'>to h2</span>
                 <h2 id='second'>Heading 2</h2>
                 ",
-                250
+                delay
             );
-
-            S("span").DoubleClick();
-
-            var afterCall = DateTime.Now;
-            Assert.Greater(afterCall, beforeCall.AddSeconds(0.3));
-            Assert.Less(afterCall, beforeCall.AddSeconds(1.0));
+            // increment the FakeTimeProvider slowly until 3 seconds are passed with increments of 100ms
+            using (var advancer = FakeTimeProviderExtensions.FakeTimeProviderExtensions.TimeAdvancer(_timeProvider, advance: TimeSpan.FromSeconds(3), increment: TimeSpan.FromMilliseconds(100)))
+            {
+                S("span").DoubleClick();
+            }
+            Assert.That(_timeProvider.GetElapsedTime(beforeCall), Is.GreaterThan(TimeSpan.FromMilliseconds(delay)));
+            Assert.That(_timeProvider.GetElapsedTime(beforeCall), Is.LessThan(TimeSpan.FromSeconds(Configuration.Timeout)));
             Assert.IsTrue(Configuration.Driver.Url.Contains("second"));
         }
 
@@ -195,6 +199,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
         {
             Configuration.Timeout = 1.0;
             Configuration.PollDuringWaits = 0.05;
+
             Given.OpenedPageWithBody(
                 @"
                 <div 

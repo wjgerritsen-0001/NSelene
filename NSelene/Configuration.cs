@@ -24,6 +24,8 @@ namespace NSelene
     {
         IWebDriver Driver { get; set; }
         double? Timeout { get; set; }
+        TimeProvider TimeProvider { get; set; }
+
         double? PollDuringWaits { get; set; }
         bool? SetValueByJs { get; set; }
         bool? TypeByJs { get; set; }
@@ -86,6 +88,19 @@ namespace NSelene
             set
             {
                 this._refTimeout.Value = value;
+            }
+        }
+
+        private Ref<TimeProvider> _refTimeProvider = new Ref<TimeProvider>();     
+        TimeProvider _SeleneSettings_.TimeProvider
+        {
+            get
+            {
+                return this._refTimeProvider.Value;
+            }
+            set
+            {
+                this._refTimeProvider.Value = value;
             }
         }
 
@@ -412,6 +427,19 @@ namespace NSelene
             }
         }
 
+        private static ThreadLocal<TimeProvider> _TimeProvider = new ThreadLocal<TimeProvider>();
+        public static TimeProvider TimeProvider
+        {
+            get
+            {
+                return Configuration._TimeProvider.Value;
+            }
+            set
+            {
+                Configuration._TimeProvider.Value = value;
+            }
+        }
+
         private static ThreadLocal<double?> _PollDuringWaits = new ThreadLocal<double?>();
         public static double PollDuringWaits
         {
@@ -528,5 +556,6 @@ namespace NSelene
                 Configuration.Driver = value;
             }
         }
+
     }
 }

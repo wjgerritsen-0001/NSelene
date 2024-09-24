@@ -1,8 +1,9 @@
+using NSelene.Conditions;
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace NSelene
 {
@@ -194,10 +195,32 @@ namespace NSelene
             return optional.Value;
         }
 
+//public void Should(Condition computation)
+//{
+//    var start = timeProvider.GetTimestamp();
+//    while (true)
+//    {
+//        try
+//        {
+//            computation._Invoke(this.entity);
+//            return;
+//        }
+//        catch (System.Exception error)
+//        {
+//            if (timeProvider.GetElapsedTime(start) > timeout)
+//            {
+//                throw new TimeoutException(...);
+//            }
+//            timeProvider.Delay(pollingPeriod).Wait();
+//        }
+//    }
+//}
         private _Result<R> _For<R>(_Computation<T, R> computation) // TODO: should we accept an interface here? make Lambda an interface? or add Operation interface?
         {
+            var timeProvider = Configuration.TimeProvider;
+
             var timeoutSpan = TimeSpan.FromSeconds(this.timeout);
-            var finishTime = DateTime.Now.Add(timeoutSpan);
+            var finishTime = timeProvider.GetUtcNow().Add(timeoutSpan);
 
             // System.Exception failFastError; // TODO: consider some failfast logic...
             while (true)
@@ -213,7 +236,7 @@ namespace NSelene
                 // }
                 catch (System.Exception error)
                 {
-                    if (DateTime.Now > finishTime)
+                    if (timeProvider.GetUtcNow() > finishTime)
                     {
                         // TODO: should we move this error formatting to the Error class definition?
                         var describedLambda = this.describeComputation(computation.ToString());
@@ -229,7 +252,8 @@ namespace NSelene
 
                         throw failure;
                     }
-                    Thread.Sleep(TimeSpan.FromSeconds(this.polling).Milliseconds);
+                    //Thread.Sleep(TimeSpan.FromSeconds(this.polling).Milliseconds);
+                    timeProvider.Delay(TimeSpan.FromSeconds(this.polling)).Wait();
                 }
             }
             // throw failFastError;
