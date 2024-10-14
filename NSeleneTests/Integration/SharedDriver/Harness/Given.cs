@@ -1,8 +1,3 @@
-using System;
-using System.Reflection;
-using NSelene;
-using OpenQA.Selenium;
-
 namespace NSelene.Tests.Integration.SharedDriver.Harness
 {
     public class When
@@ -67,22 +62,14 @@ namespace NSelene.Tests.Integration.SharedDriver.Harness
     public class Given : When
     {
 
-        public static void OpenedEmptyPage(){
-            Selene.Open(
-                new Uri(
-                    new Uri(Assembly.GetExecutingAssembly().Location), 
-                    "../../../Resources/empty.html"
-                ).AbsoluteUri
-            ); 
+        public static void OpenedEmptyPage()
+        {
+            Selene.Open(BaseTest.EmptyHtmlUri); 
         }
 
-        public static void OpenedEmptyPage(IWebDriver driver){
-            driver.Navigate().GoToUrl(
-                new Uri(
-                    new Uri(Assembly.GetExecutingAssembly().Location), 
-                    "../../../Resources/empty.html"
-                ).AbsoluteUri
-            ); 
+        public static void OpenedEmptyPage(IWebDriver driver)
+        {
+            driver.Navigate().GoToUrl(BaseTest.EmptyHtmlUri); 
         }
 
         public static void OpenedPageWithBody(string html)

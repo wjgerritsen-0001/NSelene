@@ -1,22 +1,8 @@
-using NUnit.Framework;
-using static NSelene.Selene;
-using OpenQA.Selenium;
-
 namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
 {
-    using System;
-    using Harness;
-
     [TestFixture]
     public class SeleneElement_WaitUntil_Specs: BaseTest
     {
-
-        [TearDown]
-        public void TeardownTest()
-        {
-            Configuration.Timeout = 4;
-        }
-        
         [Test]
         public void ReturnsTrue_AfterWaiting_OnMatched_AfterDelayLessThanTimeout()
         {
@@ -37,9 +23,9 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             var result = S("#will-appear").WaitUntil(Be.Visible);
             var afterCall = DateTime.Now;
 
-            Assert.IsTrue(result);
-            Assert.IsTrue(afterCall > beforeCall.AddMilliseconds(visibleDelay));
-            Assert.IsTrue(afterCall < beforeCall.AddSeconds(Configuration.Timeout));
+            Assert.That(result, Is.True);
+            Assert.That(afterCall, Is.GreaterThan(beforeCall.AddMilliseconds(visibleDelay)));
+            Assert.That(afterCall, Is.LessThan(beforeCall.AddSeconds(Configuration.Timeout)));
         }
         
         [Test]
@@ -51,8 +37,8 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             var result = S("#absent").WaitUntil(Be.Visible);
             var afterCall = DateTime.Now;
 
-            Assert.IsFalse(result);
-            Assert.IsTrue(afterCall >= beforeCall.AddSeconds(Configuration.Timeout));
+            Assert.That(result, Is.False);
+            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(Configuration.Timeout)));
         }
         
         [Test]
@@ -67,8 +53,8 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             var result = S("#hidden").WaitUntil(Be.Visible);
             var afterCall = DateTime.Now;
 
-            Assert.IsFalse(result);
-            Assert.IsTrue(afterCall >= beforeCall.AddSeconds(Configuration.Timeout));
+            Assert.That(result, Is.False);
+            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(Configuration.Timeout)));
         }
     }
 }

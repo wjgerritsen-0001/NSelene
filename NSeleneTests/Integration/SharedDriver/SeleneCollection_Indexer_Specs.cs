@@ -1,22 +1,8 @@
-using NUnit.Framework;
-using static NSelene.Selene;
-using OpenQA.Selenium;
-
 namespace NSelene.Tests.Integration.SharedDriver.SeleneCollectionSpec
 {
-    using System;
-    using Harness;
-
     [TestFixture]
     public class SeleneCollection_Indexer_Specs : BaseTest
     {
-
-        [TearDown]
-        public void TeardownTest()
-        {
-            Configuration.Timeout = 4;
-        }
-        
         [Test]
         public void NotStartSearch_OnCreation()
         {
@@ -29,7 +15,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneCollectionSpec
         {
             Given.OpenedPageWithBody("<p>have no any items</p>");
             var nonExistentElement = SS(".not-existing")[10].Element("#not-existing-inner");
-            Assert.IsNotEmpty(nonExistentElement.ToString()); 
+            Assert.That(nonExistentElement.ToString(), Is.Not.Empty); 
         }
 
         [Test]
@@ -43,7 +29,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneCollectionSpec
                     <input id='answer' type='submit' value='Good!'></input>
                 </p>"
             );
-            Assert.AreEqual("Good!", element.Value);
+            Assert.That(element.Value, Is.EqualTo("Good!"));
         }
 
         [Test]
@@ -56,13 +42,13 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneCollectionSpec
                     <input id='will-exist' type='submit' value='How r u?'></input>
                 </p>"
             );
-            Assert.AreEqual("How r u?", element.Value);
+            Assert.That(element.Value, Is.EqualTo("How r u?"));
             When.WithBody(@"
                 <p id='existing'>Hello! 
                     <input id='will-exist' type='submit' value='R u Ok?'></input>
                 </p>"
             );
-            Assert.AreEqual("R u Ok?", element.Value);
+            Assert.That(element.Value, Is.EqualTo("R u Ok?"));
         }
 
         [Test]
@@ -82,7 +68,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneCollectionSpec
                     250);"
             );
             SS("a")[1].Click();
-            Assert.IsTrue(Configuration.Driver.Url.Contains("second"));
+            Assert.That(Configuration.Driver.Url, Does.Contain("second"));
         }
 
         [Test]
@@ -108,7 +94,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneCollectionSpec
                     500);"
             );
             SS("a")[1].Click();
-            Assert.IsTrue(Configuration.Driver.Url.Contains("second"));
+            Assert.That(Configuration.Driver.Url, Does.Contain("second"));
         }
 
         [Test]
@@ -132,30 +118,35 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneCollectionSpec
                     500);"
             );
             SS("a")[1].Click();
-            Assert.IsTrue(Configuration.Driver.Url.Contains("second"));
+            Assert.That(Configuration.Driver.Url, Does.Contain("second"));
         }
 
         [Test]
         public void FailOnTimeout_DuringWaitingForVisibilityOnActionsLikeClick()
         {
-            Configuration.Timeout = 0.25;
             Given.OpenedPageWithBody(@"
                 <a href='#first'>go to Heading 1</a>
                 <a href='#second' style='display:none'>go to Heading 2</a>
                 <h1 id='first'>Heading 1</h1>
                 <h2 id='second'>Heading 2</h2>"
             );
-            When.ExecuteScriptWithTimeout(@"
-                document.getElementsByTagName('a')[1].style = 'display:block';"
-                ,
-                500
-            );
-            try {
+
+            var act = () =>
+            {
+                When.ExecuteScriptWithTimeout(@"
+                    document.getElementsByTagName('a')[1].style = 'display:block';"
+                    ,
+                    500
+                );
                 SS("a")[1].Click();
-                Assert.Fail("should fail on timeout before can be clicked");
-            } catch (TimeoutException) {
-                Assert.IsFalse(Configuration.Driver.Url.Contains("second"));
-            }
+            };
+
+            Assert.That(act, Does.Timeout($$"""
+                Browser.All(a)[1].ActualWebElement.Click()
+                Reason:
+                    element not interactable
+                """));
+            Assert.That(Configuration.Driver.Url, Does.Not.Contain("second"));
         }
     }
 }
