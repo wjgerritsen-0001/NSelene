@@ -79,7 +79,7 @@ namespace NSelene.Tests.Integration.SharedDriver.OldConditionsSpecs
             };
 
             Assert.That(act, Does.Timeout($$"""
-                OpenQA.Selenium.Chrome.ChromeDriver.Should(JSReturnedTrue)
+                Browser.Should(JSReturnedTrue)
                 Reason:
                     actual: False
                 """));
@@ -107,7 +107,7 @@ namespace NSelene.Tests.Integration.SharedDriver.OldConditionsSpecs
             };
 
             Assert.That(act, Does.Timeout($$"""
-                OpenQA.Selenium.Chrome.ChromeDriver.Should(Not.JSReturnedTrue)
+                Browser.Should(Not.JSReturnedTrue)
                 Reason:
                     condition not matched
                 """));

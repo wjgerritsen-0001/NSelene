@@ -490,8 +490,6 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
 
         public void Should_HaveText_IsRenderedInError_OnOverlappedWithOverlayFailure() // IS NOT RELEVANT
         {
-            Configuration.Timeout = 0.25;
-            Configuration.PollDuringWaits = 0.1;
             Given.OpenedPageWithBody(
                 @"
                  <div 
@@ -527,6 +525,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
                     Element is overlapped by: <div id=\"overlay\" 
                 """));
         }
+
     }
 }
 

@@ -1,7 +1,7 @@
+using OpenQA.Selenium;
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace NSelene
@@ -215,12 +215,13 @@ namespace NSelene
                 {
                     if (DateTime.Now > finishTime)
                     {
+                        var entityDescription = (entity is IWebDriver) ? "Browser" : entity.ToString();
                         // TODO: should we move this error formatting to the Error class definition?
                         var describedLambda = this.describeComputation(computation.ToString());
                         var failure = new TimeoutException(
                             $$"""
                             Timed out after {{this.timeout}}s, while waiting for:
-                                {{this.entity}}.{{describedLambda}}
+                                {{entityDescription}}.{{describedLambda}}
                             Reason:
                                 {{error.Message}}
                             """,

@@ -2,6 +2,19 @@ namespace NSelene.Tests.Integration.SharedDriver.Harness
 {
     public class When
     {
+        public static void WithPage(string html)
+        {
+            Selene.ExecuteScript(
+                $"document.getElementsByTagName('html')[0].innerHTML = `{html}`;"
+            );
+        }
+        public static void WithPageTimedOut(string html, double timeout)
+        {
+            ExecuteScriptWithTimeout(
+                $"document.getElementsByTagName('html')[0].innerHTML = `{html}`",
+                timeout
+            );
+        }
         public static void WithBody(string html)
         {
             Selene.ExecuteScript(

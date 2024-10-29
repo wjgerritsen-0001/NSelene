@@ -11,11 +11,11 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             var beforeCall = DateTime.Now;
 
             S("#absent").With(timeout: custom).WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(custom)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(custom)));
         }
-        
+
         [Test]
         public void CustomTimeoutDoesNotChangeSharedConfiguration()
         {
@@ -29,11 +29,11 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             // WHEN
             var beforeCall = DateTime.Now;
             S("#absent").WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(0.8)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(0.8)));
         }
-        
+
         [Test]
         public void CustomTimeoutDoesNotChangeAnotherCustomTimeout()
         {
@@ -43,11 +43,11 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             S("#absent").With(timeout: 0.2);
             var beforeCall = DateTime.Now;
             another.WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(0.8)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(0.8)));
         }
-        
+
         [Test]
         public void CustomConfigUseLatestSharedSettingsOnInit()
         {
@@ -58,11 +58,11 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             // ... to make waiting even longer than smaller custom timeout
             var beforeCall = DateTime.Now;
             S("#absent").With(timeout: 0.2).WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(0.6)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(0.6)));
         }
-        
+
         [Test]
         public void CustomConfigDynamicallyReuseSharedSettingsNotOverridenOnInit()
         {
@@ -74,12 +74,12 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             Configuration.PollDuringWaits = 0.6;
             var beforeCall = DateTime.Now;
             customized.WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
             // THEN the updated value is used making waiting longer correspondingly 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(0.6)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(0.6)));
         }
-        
+
         [Test]
         public void CustomConfigCanBeFullyDisconnectedFromShared()
         { // TODO: ensure same behavior for Configuration.Driver! it might be different!
@@ -91,13 +91,13 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             Configuration.PollDuringWaits = 2.0;
             var beforeCall = DateTime.Now;
             customized.WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
             // THEN the default 0.1 polling value is used making waiting shorter correspondingly 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(0.2)));
-            Assert.That(afterCall, Is.LessThan(beforeCall.AddSeconds(1.0)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(0.2)));
+            Assert.That(elapsedTime, Is.LessThan(TimeSpan.FromSeconds(1.0)));
         }
-        
+
         [Test]
         public void CustomizingComplexCollectionElementYetSharedOverride()
         {
@@ -112,13 +112,13 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             Configuration.PollDuringWaits = 0.3;
             var beforeCall = DateTime.Now;
             customized.WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
             // THEN 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(0.6)));
-            Assert.That(afterCall, Is.LessThan(beforeCall.AddSeconds(1.0)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(0.6)));
+            Assert.That(elapsedTime, Is.LessThan(TimeSpan.FromSeconds(1.0)));
         }
-        
+
         [Test]
         public void CustomizingComplexCollectionElementYetCollectionOverride()
         {
@@ -132,11 +132,11 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneElementSpec
             // WHEN
             var beforeCall = DateTime.Now;
             customized.WaitUntil(Be.Visible);
-            var afterCall = DateTime.Now;
+            var elapsedTime = DateTime.Now - beforeCall;
 
             // THEN 
-            Assert.That(afterCall, Is.GreaterThanOrEqualTo(beforeCall.AddSeconds(0.6)));
-            Assert.That(afterCall, Is.LessThan(beforeCall.AddSeconds(1.0)));
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(TimeSpan.FromSeconds(0.6)));
+            Assert.That(elapsedTime, Is.LessThan(TimeSpan.FromSeconds(1.0)));
         }
     }
 }
