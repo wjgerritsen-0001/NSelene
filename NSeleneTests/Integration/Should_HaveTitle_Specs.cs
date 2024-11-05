@@ -104,6 +104,22 @@
                 """));
         }
         [Test]
+        public void Should_HaveNoTitle_OtherText()
+        {
+            Given.OpenedEmptyPage();
+
+            var act = () =>
+            {
+                Selene.Should(Have.No.Title("start page"));
+            };
+
+            Assert.That(act, Does.Timeout($$"""
+                Browser.Should(Have.Title(«d_Hav»))
+                Reason:
+                    Actual title: «start page»
+                """));
+        }
+        [Test]
         public void Should_HaveNoTitle_OfInitialOtherText()
         {
             var titleValue = nameof(Should_HaveNoTitle_OfInitialOtherText);

@@ -73,18 +73,19 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
             var act = () =>
             {
                 Selene.WaitTo(Have.JSReturnedTrue(
-                    @"
+                    """
                     var expectedCount = arguments[0]
                     return document.getElementsByTagName('p').length == expectedCount
-                    ",
+                    """,
                     2
                 ));
             };
 
             Assert.That(act, Does.Timeout("""
-                Browser.Should(JSReturnedTrue)
+                Browser.Should(Have.JSReturnedTrue("var expectedCount = arguments[0]
+                return document.getElementsByTagName('p').length == expectedCount", "2"))
                 Reason:
-                    actual: False
+                    Actual: 'False'
                 """));
         }
         
@@ -99,19 +100,19 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
             );
 
             var act = () => {
-                Selene.WaitTo(Have.No.JSReturnedTrue(
-                    @"
+                Selene.WaitTo(Have.No.JSReturnedTrue("""
                     var expectedCount = arguments[0]
                     return document.getElementsByTagName('p').length == expectedCount
-                    ",
+                    """,
                     2
                 ));
             };
 
             Assert.That(act, Does.Timeout("""
-                Browser.Should(Not.JSReturnedTrue)
+                Browser.Should(Not.Have.JSReturnedTrue("var expectedCount = arguments[0]
+                return document.getElementsByTagName('p').length == expectedCount", "2"))
                 Reason:
-                    condition not matched
+                    Actual: 'True'
                 """));
         }
 

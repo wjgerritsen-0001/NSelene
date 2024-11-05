@@ -306,7 +306,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
         public void SetValue_IsRenderedInError_OnOverlappedWithOverlayFailure_WhenCustomizedToWaitForNoOverlapFoundByJs()
         {
             Given.OpenedPageWithBody(
-                @"
+                """
                 <div 
                     id='overlay' 
                     style='
@@ -325,10 +325,8 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
                     '
                 >
                 </div>
-
-
                 <input value='initial'></input>
-                "
+                """
             );
 
             var act = () => {
@@ -339,7 +337,21 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
                 Browser.Element(input).ActualNotOverlappedWebElement.Clear().SendKeys(overwritten)
                 Reason:
                     Element: <input value="initial">
-                    is overlapped by: <div id="overlay"
+                    is overlapped by: <div id="overlay" style="
+                        display: block;
+                        position: fixed;
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: rgba(0,0,0,0.1);
+                        z-index: 2;
+                        cursor: pointer;
+                    ">
+                </div>
                 """
                 ));
         }

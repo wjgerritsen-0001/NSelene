@@ -214,7 +214,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
         public void Submit_IsRenderedInError_OnOverlappedWithOverlayFailure_WhenCustomizedToWaitForNoOverlapFoundByJs()
         {
             Given.OpenedPageWithBody(
-                @"
+                """
                 <div 
                     id='overlay' 
                     style='
@@ -236,7 +236,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
 
                 <form action='#second'>go to H2</form>
                 <h2 id='second'>Heading 2</h2>
-                "
+                """
             );
 
             var act = () => {
@@ -247,7 +247,21 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
                 Browser.Element(form).ActualNotOverlappedWebElement.Submit()
                 Reason:
                     Element: <form action="#second">go to H2</form>
-                    is overlapped by: <div id="overlay"
+                    is overlapped by: <div id="overlay" style="
+                        display: block;
+                        position: fixed;
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: rgba(0,0,0,0.1);
+                        z-index: 2;
+                        cursor: pointer;
+                    ">
+                </div>
                 """));
         }
 

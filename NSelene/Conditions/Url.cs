@@ -26,8 +26,9 @@ namespace NSelene
                 if (!actual.Equals(this.expected))
                 {
                     throw new ConditionNotMatchedException(() => 
-                        $"Actual url: «{actual}»{Environment.NewLine}"
-                    );
+                        $"""
+                        Actual url: «{actual}»
+                        """);
                 }
             }
         }
@@ -50,9 +51,10 @@ namespace NSelene
                 var actual = entity.Url;
                 if (!actual.Contains(this.expected))
                 {
-                    throw new ConditionNotMatchedException(() => 
-                        $"Actual url: «{actual}»{Environment.NewLine}"
-                    );
+                    throw new ConditionNotMatchedException(() =>
+                        $"""
+                        Actual url: «{actual}»
+                        """);
                 }
             }
         }

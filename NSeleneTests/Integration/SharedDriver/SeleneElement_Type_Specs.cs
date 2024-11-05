@@ -265,7 +265,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
         public void Type_IsRenderedInError_OnOverlappedWithOverlayFailure()
         {
             Given.OpenedPageWithBody(
-                @"
+                """
                 <div 
                     id='overlay' 
                     style='
@@ -284,21 +284,33 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
                     '
                 >
                 </div>
-
                 <input value='before '></input>
-                "
+                """
             );
 
             var act = () => {
                 S("input").With(waitForNoOverlapFoundByJs: true).Type("and after");
             };
 
-
             Assert.That(act, Does.Timeout($$"""
                 Browser.Element(input).ActualNotOverlappedWebElement.SendKeys(and after)
                 Reason:
                     Element: <input value="before ">
-                    is overlapped by: <div id="overlay"
+                    is overlapped by: <div id="overlay" style="
+                        display: block;
+                        position: fixed;
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: rgba(0,0,0,0.1);
+                        z-index: 2;
+                        cursor: pointer;
+                    ">
+                </div>
                 """));
         }
     }

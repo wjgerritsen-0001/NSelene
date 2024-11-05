@@ -32,6 +32,13 @@ namespace NSelene
             {
                 return "" + this.result;
             }
+
+            public override string DescribeExpected ()
+            {
+                return $"""
+                    Have.JSReturnedTrue("{this.script}", "{String.Join(", ", this.arguments)}")
+                    """;
+            }
         }
     }
 

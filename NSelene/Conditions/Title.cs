@@ -6,9 +6,10 @@ namespace NSelene
 {
     namespace Conditions 
     {
-        public class Title : Condition<IWebDriver>
+        public class Title : DescribedCondition<IWebDriver>
         {
             private string expected;
+            private string actual;
 
             public Title (string expected)
             {
@@ -20,18 +21,21 @@ namespace NSelene
                 return $"Have.Title(«{this.expected}»)";
             }
 
-            public override void Invoke(IWebDriver entity)
+            public override bool Apply(IWebDriver entity)
             {
-                var actual = entity.Title;
-                if (!actual.Equals(this.expected))
-                {
-                    throw new ConditionNotMatchedException(() => 
-                        $"""
-                        Actual title: «{actual}»
-                        """
-                    );
-                }
+                actual = entity.Title;
+                return actual.Equals(this.expected);
             }
+            public override string DescribeActual()
+            {
+                return actual;
+            }
+
+            public override string DescribeExpected()
+            {
+                return $"Have.Title(«{this.expected}»)";
+            }
+
         }
         public class TitleContaining : Condition<IWebDriver>
         {

@@ -117,7 +117,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
         public void Click_IsRenderedInError_OnOverlappedWithOverlayFailure()
         {
             Given.OpenedPageWithBody(
-                @"
+                """
                 <div 
                     id='overlay' 
                     style='
@@ -139,7 +139,7 @@ namespace NSelene.Tests.Integration.SharedDriver.SeleneSpec
 
                 <a id='link' href='#second'>go to Heading 2</a>
                 <h2 id='second'>Heading 2</h2>
-                "
+                """
             );
 
             var act = () => {

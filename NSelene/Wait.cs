@@ -216,6 +216,13 @@ namespace NSelene
                     if (DateTime.Now > finishTime)
                     {
                         var entityDescription = (entity is IWebDriver) ? "Browser" : entity.ToString();
+                        var message = error.Message;
+                        var sessionIndex = message.LastIndexOf("\n  (Session info:");
+                        if (sessionIndex > -1) 
+                        {
+                            message = message.Substring(0, sessionIndex);
+                        }
+
                         // TODO: should we move this error formatting to the Error class definition?
                         var describedLambda = this.describeComputation(computation.ToString());
                         var failure = new TimeoutException(
@@ -223,7 +230,7 @@ namespace NSelene
                             Timed out after {{this.timeout}}s, while waiting for:
                                 {{entityDescription}}.{{describedLambda}}
                             Reason:
-                                {{error.Message}}
+                                {{message}}
                             """,
                             error
                         );

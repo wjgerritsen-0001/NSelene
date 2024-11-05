@@ -51,7 +51,15 @@ namespace NSelene
                 {
                     return;
                 }
-                throw new ConditionNotMatchedException();
+
+                if (this.condition is DescribedCondition<TEntity> describedCondition)
+                {
+                    throw new ConditionNotMatchedException(
+                        () => $"Actual: '{describedCondition.DescribeActual()}'"
+                    );
+                }
+
+                throw new ConditionNotMatchedException($"Not.{condition}");
             }
 
             public override string ToString()
@@ -230,7 +238,7 @@ namespace NSelene
                 var result = this.Apply(entity);
                 if (!result)
                 {
-                    throw new ConditionNotMatchedException("actual: " + this.DescribeActual());
+                    throw new ConditionNotMatchedException(() => $"Actual: '{this.DescribeActual()}'");
                 }
             }
 
